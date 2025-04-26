@@ -2,6 +2,7 @@
 #include<stdlib.h>
 #include<stdbool.h>
 #include<windows.h>
+#include<string.h>
 
 
 /*NOTICE: I used chatGPT for help and understanding of how this function works
@@ -99,6 +100,8 @@ void displayMenu(long long bank)
     printf("--------------------------------------------------\n");
     printf("Bank Balance: $%d                               \n", bank);
     printf("--------------------------------------------------\n");
+
+    setTextColor(FOREGROUND_GREEN);
 }
 //PRINT MENU==========================================================================================================
 
@@ -106,6 +109,22 @@ void displayMenu(long long bank)
 
 
 //POKER==========================================================================================================
+
+int playPoker(int bank)
+{
+    int diamonds[13] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13};
+    int hearts[13] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13};
+    int spades[13] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13};
+    int clubs[13] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13};
+
+    bool diamondCheck[13];
+    bool heartCheck[13];
+    bool spadeCheck[13];
+    bool clubCheck[13];
+
+    
+}
+
 void pokerRules(int bank)
 {
     //Prints out poker rules
@@ -114,7 +133,8 @@ void pokerRules(int bank)
     printf("You may choose to raise your bet, stand, or fold your cards. Each time you bet or stand, the dealer will place\n");
     printf("one more card until there are 5 cards on the table. With the five cards on the table and the two cards in your hand,\n");
     printf("you will see who, between you and the dealer, has a better hand. The dealer will always match your bet, so if you win\n\n");
-    printf("you get double your total bet. The specific hand types are as follows, from best to least:\n\n");
+    printf("you get double your total bet. At the beginning of play, both player and dealer will make a $50 buy-in. \n\n");
+    printf("The specific hand types are as follows, from best to least:\n\n");
 
     //Print all hand types
     printf("Royal Flush: Ace, 10, Jack, King, Queen of the same suit. This is the rarest hand in poker.\n\n");
@@ -127,8 +147,9 @@ void pokerRules(int bank)
     printf("Two Pair:Two different pairs.\n\n");
     printf("Pair: Two cards of the same rank.\n\n");
     printf("High Card: When you haven't made any of the hands above, the highest card plays.\n\n");
-
 }
+
+
 
 int pokerMenu(int bank)
 {
@@ -142,7 +163,8 @@ int pokerMenu(int bank)
         return bank;
 
     case 1:
-        break;
+        
+        return bank;
 
     case 2:
         system("cls");
@@ -215,7 +237,7 @@ int main()
     {
     case 1:
 
-        pokerMenu(bank);
+        bank = pokerMenu(bank);
         main();
 
     case 2:
@@ -232,10 +254,11 @@ int main()
         main();
 
     case 0:
-        break;
+        return 0;
 
     default:
-        break;
+        return 0;
+
     }
 
     
