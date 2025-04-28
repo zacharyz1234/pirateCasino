@@ -131,7 +131,7 @@ int playPoker(long long bank)
     {
         srand(time(NULL)); // Seed the RNG each time the loop iterates so numbers are always (hopefully) different
         playerCardNo[i] = getCard(playerCardNo, diamondCheck, heartCheck, spadeCheck, clubCheck, playerCardSuit, i);
-        dealerCardNo[i] = getCard(playerCardNo, diamondCheck, heartCheck, spadeCheck, clubCheck, dealerCardSuit, i);
+        dealerCardNo[i] = getCard(dealerCardNo, diamondCheck, heartCheck, spadeCheck, clubCheck, dealerCardSuit, i);
     }
 
     for(int i = 0; i < 2; i++)

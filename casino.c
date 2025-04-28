@@ -110,7 +110,7 @@ void displayMenu(long long bank)
 
 //POKER==========================================================================================================
 
-
+//Sets the four boolean arrays to be true when the game starts so that the getCard function works correctly
 void setArraysTrue(bool arr[])
 {
     for(int i = 0; i < 13; i++)
@@ -143,6 +143,8 @@ int getCard(int cards[], bool diamondCheck[], bool heartCheck[], bool spadeCheck
             }
             
 
+
+
             case 2:
             if(heartCheck[cardNo] == false)
             {
@@ -154,6 +156,9 @@ int getCard(int cards[], bool diamondCheck[], bool heartCheck[], bool spadeCheck
                 cardSuit[num] = 2;
                 return cardNo;
             }
+
+
+
 
             case 3:
             if(spadeCheck[cardNo] == false)
@@ -167,6 +172,9 @@ int getCard(int cards[], bool diamondCheck[], bool heartCheck[], bool spadeCheck
                 return cardNo;
             }
 
+
+
+            
             case 4:
             if(clubCheck[cardNo] == false)
             {
@@ -183,13 +191,21 @@ int getCard(int cards[], bool diamondCheck[], bool heartCheck[], bool spadeCheck
 
 }
 
+int setBet(int bank)
+{
+    int bet;
+    printf("You currently have $%d in your bank. How much money would you like to bet: ");
+    scanf("%d", &bet);
+}
+
 
 int playPoker(long long bank)
 {
     long long pot = 0;
     int playerCardNo[2], dealerCardNo[2]; //Two arrays to hold the hands for both player and dealer
     int playerCardSuit[2], dealerCardSuit[2]; //This array holds the suits so that there isn't any confusion if two of the same card number are pulled
-    int tableCards[5]; //An array to hold the cards that will be on the table
+
+    int tableCardNo[5], tableCardSuit[5]; //An array to hold the cards that will be on the table
     
 
     //Two sets of arrays, one to represent the numbered cards and another to represent if the cards have been used.
@@ -217,19 +233,57 @@ int playPoker(long long bank)
     }
 
     bank -= 50;
-    pot += 50;
+    pot += 100; //Total amount of both the player and dealers' buy-ins
 
-    for(int i = 0; i < 2; i++)
+    for(int i = 0; i < 2; i++) //For loop to get both the player and dealers' cards
     {
-        srand(time(NULL)); // Seed the RNG each time the loop iterates so numbers are always (hopefully) different
         playerCardNo[i] = getCard(playerCardNo, diamondCheck, heartCheck, spadeCheck, clubCheck, playerCardSuit, i);
-        dealerCardNo[i] = getCard(playerCardNo, diamondCheck, heartCheck, spadeCheck, clubCheck, dealerCardSuit, i);
+        dealerCardNo[i] = getCard(dealerCardNo, diamondCheck, heartCheck, spadeCheck, clubCheck, dealerCardSuit, i);
     }
 
+    for(int i = 0; i < 5; i++) //For loop to get all cards for the table. 
+    {
+        tableCardNo[i] = getCard(dealerCardNo, diamondCheck, heartCheck, spadeCheck, clubCheck, dealerCardSuit, i);
+    }
+
+
+    //FOR TESTING PURPOSES TO SEE CARD TYPES FOR BOTH PLAYER AND DEALER
     for(int i = 0; i < 2; i++)
     {
         printf("PLAYER CARD NO: %d SUIT: %d DEALER CARD NO: %d SUIT: %d\n", playerCardNo[i], playerCardSuit[i], dealerCardNo[i], dealerCardSuit[i]);
     }
+
+    //NEED TO MAKE A PRINT CARDS FUNCTION HERE
+
+
+    int turnChoice; //I was going to use a char for this but chars didn't want to work with my scanf function
+    
+    while(turnChoice < 1 || turnChoice > 3)
+    {
+        printf("Would you like to bet (1), stand (2), or fold (3): ");
+        scanf(" %d", &turnChoice);
+    }
+
+    if(turnChoice == 1)
+    {
+        int bet;
+        bet = setBet(bank);
+
+    }
+    else if(turnChoice == 2)
+    {
+        
+    }
+    else if(turnChoice == 3)
+    {
+        printf("Player folded, ending game...");
+        sleep(1); //I like it to pause for a second so the player can read that the game is ending and stuff
+        system("cls");
+        return bank;
+    }
+
+
+
 
 }
 
@@ -332,11 +386,9 @@ void slotsRules()
 
 //SLOTS==========================================================================================================
 
-int main()
+void gameChoiceSwitch(int bank)
 {
-    int gameChoice; //Will be used in the switch statement
-    long long bank = 1000; //Starting value for bank is $1000
-
+    int gameChoice;
 
     displayMenu(bank);
     scanf("%d", &gameChoice);
@@ -345,32 +397,72 @@ int main()
     switch(gameChoice)
     {
     case 0:
-        return 0;
+        return;
 
 
     case 1:
 
         bank = pokerMenu(bank);
-        main();
+        gameChoiceSwitch(bank);
 
     case 2:
 
 
-        main();
+        gameChoiceSwitch(bank);
 
     case 3:
 
-        main();
+        gameChoiceSwitch(bank);
 
     case 4:
 
-        main();
+        gameChoiceSwitch(bank);
 
 
     default:
-        return 0;
+        return;
 
     }
+
+}
+
+int main()
+{
+    int gameChoice; //Will be used in the switch statement
+    long long bank = 1000; //Starting value for bank is $1000
+
+
+    gameChoiceSwitch(bank);
+
+    // switch(gameChoice)
+    // {
+    // case 0:
+    //     return 0;
+
+
+    // case 1:
+
+    //     bank = pokerMenu(bank);
+    //     main();
+
+    // case 2:
+
+
+    //     main();
+
+    // case 3:
+
+    //     main();
+
+    // case 4:
+
+    //     main();
+
+
+    // default:
+    //     return 0;
+
+    // }
 
     
 }
