@@ -110,6 +110,82 @@ void displayMenu(long long bank)
 
 //POKER==========================================================================================================
 
+void printCard(int number, int suit)
+{
+    char *numStr;
+    char *suitStr;
+
+    // Convert card numbers to face card names
+    switch(number)
+    {
+    case 1:
+        numStr = "Ace";
+        break;
+
+    case 11:
+        numStr = "Jack";
+        break;
+
+    case 12:
+        numStr = "Queen";
+        break;
+
+    case 13:
+        numStr = "King";
+        break;
+
+    default:
+        static char buffer[3];
+        sprintf(buffer, "%d", number);
+        numStr = buffer;
+
+    }
+
+    // Converts suit number to suit name
+    switch(suit)
+    {
+    case 1:
+        suitStr = "Diamonds";
+        break;
+
+    case 2:
+        suitStr = "Hearts";
+        break;
+
+    case 3:
+        suitStr = "Spades";
+        break;
+
+    case 4:
+        suitStr = "Clubs";
+        break;
+
+    default:
+        suitStr = "Unknown";
+    }
+
+    printf("%s of %s", numStr, suitStr);
+}
+
+void printPlayerAndTableCards(int playerCardNo[], int playerCardSuit[], int tableCardNo[], int tableCardSuit[], int tableCardsShown)
+{
+    printf("\nYour Hand:\n");
+    for (int i = 0; i < 2; i++)
+    {
+        printf("- ");
+        printCard(playerCardNo[i], playerCardSuit[i]);
+        printf("\n");
+    }
+
+    printf("\nTable Cards:\n");
+    for (int i = 0; i < tableCardsShown; i++)
+    {
+        printf("- ");
+        printCard(tableCardNo[i], tableCardSuit[i]);
+        printf("\n");
+    }
+}
+
 //Sets the four boolean arrays to be true when the game starts so that the getCard function works correctly
 void setArraysTrue(bool arr[])
 {
@@ -191,11 +267,27 @@ int getCard(int cards[], bool diamondCheck[], bool heartCheck[], bool spadeCheck
 
 }
 
-int setBet(int bank)
+long long setBet(long long bank, long long *pot)
 {
-    int bet;
-    printf("You currently have $%d in your bank. How much money would you like to bet: ");
+    system("cls");
+    long long bet;
+    printf("You currently have $%d in your bank. There are $%d in the pot. How much money would you like to bet (Enter 0 or below to cancel your bet and stand): ", bank, *pot);
     scanf("%d", &bet);
+
+    if(bet <= 0)
+    {
+        printf("Player chose not to bet...");
+        sleep(1);
+        return bank;
+    }
+
+    bank -= bet;
+    *pot += bet * 2; //Doubles bet to account for dealer adding to the pot as well
+
+    printf("Player bets $%d. There are now $%d in the pot...", bet, *pot);
+    sleep(1);
+
+    return bank;
 }
 
 
@@ -243,44 +335,76 @@ int playPoker(long long bank)
 
     for(int i = 0; i < 5; i++) //For loop to get all cards for the table. 
     {
-        tableCardNo[i] = getCard(dealerCardNo, diamondCheck, heartCheck, spadeCheck, clubCheck, dealerCardSuit, i);
+        tableCardNo[i] = getCard(tableCardNo, diamondCheck, heartCheck, spadeCheck, clubCheck, tableCardSuit, i);
     }
-
 
     //FOR TESTING PURPOSES TO SEE CARD TYPES FOR BOTH PLAYER AND DEALER
-    for(int i = 0; i < 2; i++)
-    {
-        printf("PLAYER CARD NO: %d SUIT: %d DEALER CARD NO: %d SUIT: %d\n", playerCardNo[i], playerCardSuit[i], dealerCardNo[i], dealerCardSuit[i]);
-    }
+    // for(int i = 0; i < 2; i++)
+    // {
+    //     printf("PLAYER CARD NO: %d SUIT: %d \nDEALER CARD NO: %d SUIT: %d\n", playerCardNo[i], playerCardSuit[i], dealerCardNo[i], dealerCardSuit[i]);
+    // }
+
+    //     printf("\n");
+
+    // for(int i = 0; i < 5; i++)
+    // {
+    //     printf("TABLE CARD NO: %d SUIT: %d\n", tableCardNo[i], tableCardSuit[i]);
+    // }
 
     //NEED TO MAKE A PRINT CARDS FUNCTION HERE
 
+    int tableCardsRevealed = 3; // Start by revealing 3 cards
+    int turnCount = 0;
 
-    int turnChoice; //I was going to use a char for this but chars didn't want to work with my scanf function
-    
-    while(turnChoice < 1 || turnChoice > 3)
+
+    //Where the game of poker actually runs
+while (turnCount < 3) //Should only run 3  times
+{
+    int turnChoice = 0;
+
+    while (turnChoice < 1 || turnChoice > 3)
     {
-        printf("Would you like to bet (1), stand (2), or fold (3): ");
-        scanf(" %d", &turnChoice);
+
+        system("cls");
+        printPlayerAndTableCards(playerCardNo, playerCardSuit, tableCardNo, tableCardSuit, tableCardsRevealed);
+
+        printf("\nWould you like to bet (1), stand (2), fold (3): ");
+        scanf("%d", &turnChoice);
     }
 
-    if(turnChoice == 1)
+    if (turnChoice == 1)
     {
-        int bet;
-        bet = setBet(bank);
-
+        bank = setBet(bank, &pot);
     }
-    else if(turnChoice == 2)
+    else if (turnChoice == 2)
     {
-        
+        system("cls");
+        printf("Player decided to stand...\n");
+        sleep(1);
     }
-    else if(turnChoice == 3)
+    else if (turnChoice == 3)
     {
         printf("Player folded, ending game...");
-        sleep(1); //I like it to pause for a second so the player can read that the game is ending and stuff
+        sleep(1);
         system("cls");
         return bank;
     }
+
+    turnCount++;
+    if (turnCount == 1)
+    {
+        tableCardsRevealed = 4;
+        printf("\nDealer places a new card on the table...\n");
+        sleep(1);
+    }
+    else if (turnCount == 2)
+    {
+        tableCardsRevealed = 5;
+        printf("\nDealer places a final card on the table...\n");
+        sleep(1);
+    }
+    // Do NOT print anything if turnCount == 3 (all 5 cards already out)
+}
 
 
 
@@ -325,7 +449,7 @@ int pokerMenu(long long bank)
         return bank;
 
     case 1:
-        system("cls"); //THIS SYSTEM CLEAR FUNCTION ONLY WORKS ON WINDOWS. FOR IT TO WORK ON LINUX/UNIX ENTER "clear" INSTEAD OF "cls"
+        system("cls"); //THIS SYSTEM CLEAR FUNCTION ONLY WORKS ON WINDOWS. FOR IT TO WORK ON LINUX/UNIX CHANGE TO "clear" INSTEAD OF "cls"
         bank = playPoker(bank);
         return bank;
 
