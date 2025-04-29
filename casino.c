@@ -404,9 +404,12 @@ while (turnCount < 3) //Should only run 3  times
         sleep(1);
     }
     // Do NOT print anything if turnCount == 3 (all 5 cards already out)
+    
 }
 
 
+sleep(1);
+system("cls");
 
 
 }
