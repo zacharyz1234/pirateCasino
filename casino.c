@@ -755,6 +755,11 @@ while (turnCount < 3) //Should only run 3  times
 
     while (turnChoice < 1 || turnChoice > 3)
     {
+        if(turnChoice == 42)
+        {
+            printf("\n\nI wanted to put an easter egg here, so hi.\n\n");
+            sleep(3);
+        }
 
         system("cls");
         printPlayerAndTableCards(playerCardNo, playerCardSuit, tableCardNo, tableCardSuit, tableCardsRevealed);
