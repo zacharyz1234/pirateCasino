@@ -516,20 +516,169 @@ long long setBet(long long bank, long long *pot)
     return bank;
 }
 
-void printWinner(int playerHandType, int dealerHandType, int playerHand[], int dealerHand[])
+int printWinner(int playerHandType, int dealerHandType, int playerHand[], int dealerHand[], long long bank, long long *pot)
 {
 
     if(playerHandType > dealerHandType)
     {
-        //Function to print winner with what hand type
+        switch(playerHandType)
+        {
+            case 1:
+
+                printf("Player wins with High Card. Payout: $%lld", *pot);
+                bank += *pot;
+                *pot = 0;
+                return bank;
+
+            case 2:
+
+                printf("Player wins with a Pair. Payout: $%lld", *pot);
+                bank += *pot;
+                *pot = 0;
+                return bank;
+
+            case 3:
+
+                printf("Player wins with Two Pair. Payout: $%lld", *pot);
+                bank += *pot;
+                *pot = 0;
+                return bank;
+
+            case 4:
+
+                printf("Player wins with Three of A Kind. Payout: $%lld", *pot);
+                bank += *pot;
+                *pot = 0;
+                return bank;
+
+            case 5:
+
+                printf("Player wins with a Straight. Payout: $%lld", *pot);
+                bank += *pot;
+                *pot = 0;
+                return bank;
+
+            case 6:
+
+                printf("Player wins with a Flush. Payout: $%lld", *pot);
+                bank += *pot;
+                *pot = 0;
+                return bank;
+
+            case 7:
+
+                printf("Player wins with Full House. Payout: $%lld", *pot);
+                bank += *pot;
+                *pot = 0;
+                return bank;
+
+            case 8:
+
+                printf("Player wins with Four of A Kind. Payout: $%lld", *pot);
+                bank += *pot;
+                *pot = 0;
+                return bank;
+            
+            case 9:
+
+                printf("Player wins with Straight Flush. Payout: $%lld", *pot);
+                bank += *pot;
+                *pot = 0;
+                return bank;
+
+            case 10:
+
+                printf("Player wins with Royal Flush! Insanely lucky! Payout: $%lld", *pot);
+                bank += *pot;
+                *pot = 0;
+                return bank;
+            
+        }
     }
     else if(dealerHandType > playerHandType)
     {
+        switch(dealerHandType)
+        {
+            case 1:
 
+                printf("Dealer wins with High Card.");
+                *pot = 0;
+                return bank;
+
+            case 2:
+
+                printf("Dealer wins with One Pair.");
+                *pot = 0;
+                return bank;
+
+            case 3:
+
+                printf("Dealer wins with Two Pair.");
+                *pot = 0;
+                return bank;
+
+            case 4:
+
+                printf("Dealer wins with Three of A Kind.");
+                *pot = 0;
+                return bank;
+
+            case 5:
+
+                printf("Dealer wins with Straight.");
+                *pot = 0;
+                return bank;
+
+            case 6:
+
+                printf("Dealer wins with Flush.");
+                *pot = 0;
+                return bank;
+
+            case 7:
+
+                printf("Dealer wins with Full House.");
+                *pot = 0;
+                return bank;
+
+            case 8:
+
+                printf("Dealer wins with Four of A Kind.");
+                *pot = 0;
+                return bank;
+            
+            case 9:
+
+                printf("Dealer wins with Straight Flush.");
+                *pot = 0;
+                return bank;
+
+            case 10:
+
+                printf("Dealer wins with a Royal Flush!");
+                *pot = 0;
+                return bank;
+            
+        }
     }
     else if(dealerHandType == playerHandType)
     {
 
+        if((playerHand[0] > dealerHand[0] && playerHand[0] > dealerHand[1]) || (playerHand[1] > dealerHand[0] && playerHand[1] > dealerHand[1]))
+        {
+            printf("Tied hands. Player wins with higher card. Payout: $%lld", *pot);
+        }
+        else if((playerHand[0] < dealerHand[0] && playerHand[0] < dealerHand[1]) || (playerHand[1] < dealerHand[0] && playerHand[1] < dealerHand[1]))
+        {
+            printf("Tied hands. Dealer wins with higher card.");
+        }
+        else
+        {
+            printf("Tied hands with no single highest card. Pot will be split. Payout: $%lld", *pot / 2);
+            bank -= *pot / 2;
+        }
+        
+        return bank;
     }
 }
 
@@ -681,19 +830,33 @@ int dealerHandType = evaluateHands(dealerAllCardNum, dealerAllCardSuit);
 
 printAllCards(playerCardNo, playerCardSuit, tableCardNo, tableCardSuit, tableCardsRevealed, dealerCardNo, dealerCardSuit);
 
-printf("%d \n", playerHandType);
-printf("%d \n", dealerHandType);
 
-printWinner(playerHandType, dealerHandType, playerCardNo, dealerCardNo);
+//DEBUG PRINT HAND TYPES
+// printf("%d \n", playerHandType);
+// printf("%d \n", dealerHandType);
+
+printf("\n\n");
+
+bank = printWinner(playerHandType, dealerHandType, playerCardNo, dealerCardNo, bank, &pot);
+
+
+int playAgain;
+printf("\n\n\n\nEnter 1 to play again (There is still a $50 buy-in) or anything else to return to the menu: ");
+scanf("%d", &playAgain);
+
+if(playAgain == 1)
+{
+    system("cls");
+    printf("Starting new game...");
+    sleep(2);
+    bank = playPoker(bank);
+} 
 
 
 
-sleep(1);
 system("cls");
 
 return bank;
-
-
 }
 
 void pokerRules()
@@ -731,6 +894,7 @@ int pokerMenu(long long bank)
     switch(choice)
     {
     case 0:
+        system("cls");
         return bank;
 
     case 1:
@@ -746,6 +910,7 @@ int pokerMenu(long long bank)
         break;
     
     default:
+        system("cls");
         return bank;
     
     }
